@@ -1,0 +1,9 @@
+.idea/
+lib_managed/
+project/boot/
+project/build/target/
+target/
+test-dbs/*-*
+test-dbs/databases.properties
+*.log
+*.iml
