@@ -15,7 +15,7 @@ import org.scalaquery.ql.extended.H2Driver.Implicit._
 import org.scalaquery.ql.extended.{ExtendedTable => Table}
 
 /**
- * A Simple example that uses statically typed queries against an in-memory
+ * A simple example that uses statically typed queries against an in-memory
  * H2 database. The example data comes from Oracle's JDBC tutorial at
  * http://download.oracle.com/javase/tutorial/jdbc/basics/tables.html.
  */
