@@ -1,6 +1,6 @@
 This project should help you get started with ScalaQuery <http://scalaquery.org>.
 
-You only need a JRE and sbt <http://code.google.com/p/simple-build-tool/> installed.
+You only need a JRE and sbt 0.7 <http://code.google.com/p/simple-build-tool/> installed.
 
 1. Clone this project (or download it manually from
 <https://github.com/szeiger/scalaquery-examples/archives/master>):
@@ -21,3 +21,8 @@ of all available examples:
 
 * MultiDBExample: Shows how to write portable code based on a ScalaQuery
   profile and run it against different DBMSs.
+
+* UseInvoker: Shows various ways of reading data from an Invoker.
+
+* CallNativeDBFunction: Shows how to use a database function which is not
+  provided by the ScalaQuery driver.
