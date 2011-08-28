@@ -9,7 +9,7 @@ class Project(info: ProjectInfo) extends DefaultProject(info)
     catch { case _:NoSuchMethodException => false }
 
   /*********** Dependencies ***********/
-  val scalaQuery = "org.scalaquery" %% "scalaquery" % "0.9.2" withSources()
+  val scalaQuery = "org.scalaquery" %% "scalaquery" % "0.9.5" withSources()
   val h2 = "com.h2database" % "h2" % "1.2.140"
   val sqlite = "org.xerial" % "sqlite-jdbc" % "3.6.20"
   //val derby = "org.apache.derby" % "derby" % "10.6.1.0"
