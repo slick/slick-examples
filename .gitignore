@@ -1,9 +1,10 @@
-.idea/
-lib_managed/
-project/boot/
-project/build/target/
+/.idea/
 target/
-test-dbs/*-*
-test-dbs/databases.properties
+/test-dbs/*-*
+/test-dbs/databases.properties
 *.log
 *.iml
+/\.target/
+/\.cache
+/\.project
+/\.classpath
