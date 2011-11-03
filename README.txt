@@ -1,6 +1,6 @@
 This project should help you get started with ScalaQuery <http://scalaquery.org>.
 
-You only need a JRE and sbt 0.7 <http://code.google.com/p/simple-build-tool/> installed.
+You only need a JRE and sbt 0.11 <http://code.google.com/p/simple-build-tool/> installed.
 
 1. Clone this project (or download it manually from
 <https://github.com/szeiger/scalaquery-examples/archives/master>):
