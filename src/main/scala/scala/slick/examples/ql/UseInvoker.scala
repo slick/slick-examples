@@ -1,11 +1,7 @@
-package org.scalaquery.examples
+package scala.slick.examples.ql
 
-import org.scalaquery.session._
-import org.scalaquery.session.Database.threadLocalSession
-import org.scalaquery.ql._
-import org.scalaquery.ql.TypeMapper._
-import org.scalaquery.ql.extended.H2Driver.Implicit._
-import org.scalaquery.ql.extended.{ExtendedTable => Table}
+import scala.slick.driver.H2Driver.simple._
+import Database.threadLocalSession
 
 /**
  * Use various ways of reading data from an Invoker.

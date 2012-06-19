@@ -1,18 +1,10 @@
-package org.scalaquery.examples
+package scala.slick.examples.ql
 
-// Import the session management, including the implicit threadLocalSession
-import org.scalaquery.session._
-import org.scalaquery.session.Database.threadLocalSession
+// Use H2Driver to connect to an H2 database
+import scala.slick.driver.H2Driver.simple._
 
-// Import the query language
-import org.scalaquery.ql._
-
-// Import the standard SQL types
-import org.scalaquery.ql.TypeMapper._
-
-// Use H2Driver which implements ExtendedProfile and thus requires ExtendedTables
-import org.scalaquery.ql.extended.H2Driver.Implicit._
-import org.scalaquery.ql.extended.{ExtendedTable => Table}
+// Use the implicit threadLocalSession
+import Database.threadLocalSession
 
 /**
  * A simple example that uses statically typed queries against an in-memory
@@ -106,6 +98,7 @@ object FirstExample {
       // Check the SELECT statement for that query
       println(q3.selectStatement)
 
+      /*
       // Compute the number of coffees by each supplier
       println("Coffees per supplier:")
       val q4 = for {
@@ -113,12 +106,13 @@ object FirstExample {
         s <- c.supplier
         _ <- Query groupBy s.id
       } yield s.name.min.get ~ c.name.count
-      // .get is needed because ScalaQuery cannot enforce statically that
+      // .get is needed because SLICK cannot enforce statically that
       // the supplier is always available (being a non-nullable foreign key),
       // thus wrapping it in an Option
       q4 foreach { case (name, count) =>
         println("  " + name + ": " + count)
       }
+      */
     }
   }
 }

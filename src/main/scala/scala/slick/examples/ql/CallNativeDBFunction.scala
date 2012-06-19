@@ -1,11 +1,7 @@
-package org.scalaquery.examples
+package scala.slick.examples.ql
 
-import org.scalaquery.session._
-import org.scalaquery.session.Database.threadLocalSession
-import org.scalaquery.ql._
-import org.scalaquery.ql.TypeMapper._
-import org.scalaquery.ql.extended.H2Driver.Implicit._
-import org.scalaquery.ql.extended.{ExtendedTable => Table}
+import scala.slick.driver.H2Driver.simple._
+import Database.threadLocalSession
 import java.sql.Date
 
 /**
@@ -47,6 +43,7 @@ object CallNativeDBFunction {
         (Date.valueOf("2011-04-11"), 2)
       )
 
+      /*
       // Use the lifted function in a query to group by day of week
       val q1 = for {
         dow ~ count <- SalesPerDay.map(s => dayOfWeek2(s.day) ~ s.count)
@@ -55,6 +52,7 @@ object CallNativeDBFunction {
 
       println("Day of week (1 = Sunday) -> Sales:")
       q1.foreach { case (dow, sum) => println("  " + dow + "\t->\t" + sum) }
+      */
     }
   }
 }
