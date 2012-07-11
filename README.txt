@@ -5,7 +5,7 @@ You only need a JRE and sbt 0.12.0-Beta2 <https://github.com/harrah/xsbt/wiki> i
 1. Clone this project (or download it manually from
 <https://github.com/slick/slick-examples/archives/master>):
 
-> git clone git://github.com/szeiger/scalaquery-examples.git
+> git clone git://github.com/slick/slick-examples.git
 
 2. Run it with sbt:
 

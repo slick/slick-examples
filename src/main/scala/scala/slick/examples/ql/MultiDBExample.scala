@@ -27,7 +27,7 @@ class DAO(val driver: ExtendedProfile) {
 }
 
 /**
- * Run ScalaQuery code with multiple DBMSs.
+ * Run SLICK code with multiple DBMSs.
  */
 object MultiDBExample {
   // We only need the DB/session imports outside the DAO

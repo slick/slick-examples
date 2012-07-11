@@ -5,7 +5,7 @@ import Database.threadLocalSession
 import java.sql.Date
 
 /**
- * This example shows how to lift a native database function to ScalaQuery's
+ * This example shows how to lift a native database function to SLICK's
  * query language.
  */
 object CallNativeDBFunction {
