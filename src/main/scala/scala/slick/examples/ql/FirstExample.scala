@@ -14,7 +14,7 @@ import Database.threadLocalSession
 object FirstExample extends App {
 
   // Definition of the SUPPLIERS table
-  val Suppliers = new Table[(Int, String, String, String, String, String)]("SUPPLIERS") {
+  object Suppliers extends Table[(Int, String, String, String, String, String)]("SUPPLIERS") {
     def id = column[Int]("SUP_ID", O.PrimaryKey) // This is the primary key column
     def name = column[String]("SUP_NAME")
     def street = column[String]("STREET")
@@ -26,7 +26,7 @@ object FirstExample extends App {
   }
 
   // Definition of the COFFEES table
-  val Coffees = new Table[(String, Int, Double, Int, Int)]("COFFEES") {
+  object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
     def name = column[String]("COF_NAME", O.PrimaryKey)
     def supID = column[Int]("SUP_ID")
     def price = column[Double]("PRICE")
@@ -81,7 +81,7 @@ object FirstExample extends App {
     val q2 = for {
       c <- Coffees if c.price < 9.0
       s <- Suppliers if s.id === c.supID
-    } yield c.name ~ s.name
+    } yield (c.name, s.name)
     for(t <- q2) println("  " + t._1 + " supplied by " + t._2)
 
     // Do the same thing using the navigable foreign key
@@ -89,7 +89,7 @@ object FirstExample extends App {
     val q3 = for {
       c <- Coffees if c.price < 9.0
       s <- c.supplier
-    } yield c.name ~ s.name
+    } yield (c.name, s.name)
     // This time we read the result set into a List
     val l3: List[(String, String)] = q3.list
     for((s1, s2) <- l3) println("  " + s1 + " supplied by " + s2)
