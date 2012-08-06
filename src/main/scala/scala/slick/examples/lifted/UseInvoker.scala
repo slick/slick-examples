@@ -1,4 +1,4 @@
-package scala.slick.examples.ql
+package scala.slick.examples.lifted
 
 import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession

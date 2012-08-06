@@ -1,6 +1,6 @@
 This project should help you get started with SLICK <https://github.com/slick/slick>.
 
-You only need a JRE and sbt 0.12.0-Beta2 <https://github.com/harrah/xsbt/wiki> installed.
+You only need a JRE and sbt 0.12.0 <https://github.com/harrah/xsbt/wiki> installed.
 
 1. Clone this project (or download it manually from
 <https://github.com/slick/slick-examples/archives/master>):

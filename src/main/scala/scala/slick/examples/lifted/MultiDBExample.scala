@@ -1,4 +1,4 @@
-package scala.slick.examples.ql
+package scala.slick.examples.lifted
 
 import scala.slick.driver.{ExtendedProfile, H2Driver, SQLiteDriver}
 import slick.ast.Dump
