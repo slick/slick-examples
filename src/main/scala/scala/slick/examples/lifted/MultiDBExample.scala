@@ -1,5 +1,6 @@
 package scala.slick.examples.lifted
 
+import scala.slick.jdbc.JdbcBackend._
 import scala.slick.driver.{ExtendedProfile, H2Driver, SQLiteDriver}
 import slick.ast.Dump
 
@@ -7,7 +8,7 @@ import slick.ast.Dump
  * All database code goes into the DAO (data access object) class which is
  * parameterized by a SLICK driver that implements ExtendedProfile.
  */
-class DAO(val driver: ExtendedProfile) {
+class DAO(val driver: ExtendedProfile)(val db: Database) {
   // Import the query language features from the driver
   import driver.simple._
 
@@ -46,12 +47,9 @@ class DAOHelper(val d: DAO) {
  * Run SLICK code with multiple DBMSs.
  */
 object MultiDBExample {
-  // We only need the DB/session imports outside the DAO
-  import scala.slick.session.{Database, Session}
-
-  def run(name: String, dao: DAO, db: Database) {
+  def run(name: String, dao: DAO) {
     println("Running test against " + name)
-    db withSession { session: Session =>
+    dao.db withSession { session: Session =>
       implicit val implicitSession = session
       dao.create
       dao.insert("foo", "bar")
@@ -65,9 +63,9 @@ object MultiDBExample {
   }
 
   def main(args: Array[String]) {
-    run("H2", new DAO(H2Driver),
-      Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver"))
-    run("SQLite", new DAO(SQLiteDriver),
-      Database.forURL("jdbc:sqlite::memory:", driver = "org.sqlite.JDBC"))
+    run("H2", new DAO(H2Driver)
+      (Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver")))
+    run("SQLite", new DAO(SQLiteDriver)
+      (Database.forURL("jdbc:sqlite::memory:", driver = "org.sqlite.JDBC")))
   }
 }

@@ -1,6 +1,6 @@
 package scala.slick.examples.jdbc
 
-import scala.slick.session.Database
+import scala.slick.driver.BasicDriver.backend.Database
 import Database.threadLocalSession
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
