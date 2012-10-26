@@ -59,6 +59,7 @@ trait UserComponent { this: Profile with PictureComponent => //requires Profile 
  * The Data Access Layer contains all components and a profile
  */
 class DAL(override val profile: ExtendedProfile) extends UserComponent with PictureComponent with Profile {
+  import profile.simple._
   def create(implicit session: Session): Unit = {
     (Users.ddl ++ Pictures.ddl).create //helper method to create all tables
   }
