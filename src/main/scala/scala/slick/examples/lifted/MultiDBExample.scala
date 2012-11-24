@@ -51,8 +51,7 @@ object MultiDBExample {
 
   def run(name: String, dao: DAO, db: Database) {
     println("Running test against " + name)
-    db withSession { session: Session =>
-      implicit val implicitSession = session
+    db withSession { implicit session: Session =>
       dao.create
       dao.insert("foo", "bar")
       dao.insert("a", "b")
