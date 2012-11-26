@@ -79,8 +79,7 @@ object MultiDBCakeExample {
     import dal.profile.simple._
 
     println("Running test against " + name)
-    db withSession { session: Session =>
-      implicit val implicitSession = session
+    db withSession { implicit session: Session =>
       dal.create
 
       //creating our default picture
