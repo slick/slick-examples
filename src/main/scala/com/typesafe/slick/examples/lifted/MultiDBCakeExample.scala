@@ -1,4 +1,4 @@
-package scala.slick.examples.lifted
+package com.typesafe.slick.examples.lifted
 
 import scala.slick.driver.ExtendedProfile
 import scala.slick.session.Session

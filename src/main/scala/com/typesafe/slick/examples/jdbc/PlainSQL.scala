@@ -1,4 +1,4 @@
-package scala.slick.examples.jdbc
+package com.typesafe.slick.examples.jdbc
 
 import scala.slick.session.Database
 import Database.threadLocalSession

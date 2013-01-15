@@ -1,4 +1,4 @@
-package scala.slick.examples.lifted
+package com.typesafe.slick.examples.lifted
 
 // Use H2Driver to connect to an H2 database
 import scala.slick.driver.H2Driver.simple._
