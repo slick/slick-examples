@@ -25,11 +25,9 @@ object UseInvoker extends App {
     // This is preferable to generating new queries in a parameterized def
     // because the SQL statement is only generated once and all parameters
     // are passed in via bind variables.
-    val upTo = for {
-      k <- Parameters[Int]
-      t <- T if t.k <= k
-      _ <- Query orderBy t.k
-    } yield t
+    val upTo = Parameters[Int].flatMap { k =>
+      Query(T).filter(_.k <= k).sortBy(_.k)
+    }
 
     println("List of k/v pairs up to 3 with .list")
     println("  " + upTo.list(3))
