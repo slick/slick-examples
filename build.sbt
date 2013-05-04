@@ -2,9 +2,9 @@ organization := "com.typesafe.slick"
 
 name := "slick-examples"
 
-version := "1.0.0"
+version := "1.0.1-RC1"
 
-scalaVersion := "2.10.0"
+scalaVersion := "2.10.1"
 
 scalacOptions += "-deprecation"
 
@@ -14,14 +14,15 @@ scalacOptions += "-deprecation"
 libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-compiler" % _)
 
 libraryDependencies ++= List(
-  "com.typesafe.slick" %% "slick" % "1.0.0",
+  "com.typesafe.slick" %% "slick" % "1.0.1-RC1",
   "org.slf4j" % "slf4j-nop" % "1.6.4",
-  "com.h2database" % "h2" % "1.3.170",
-  "org.xerial" % "sqlite-jdbc" % "3.6.20"
+  "com.h2database" % "h2" % "1.3.166",
+  "org.xerial" % "sqlite-jdbc" % "3.7.2"
 /*
-  "org.apache.derby" % "derby" % "10.6.1.0",
-  "org.hsqldb" % "hsqldb" % "2.0.0",
-  "postgresql" % "postgresql" % "8.4-701.jdbc4",
-  "mysql" % "mysql-connector-java" % "5.1.13"
+  "org.apache.derby" % "derby" % "10.9.1.0",
+  "org.hsqldb" % "hsqldb" % "2.2.8",
+  "postgresql" % "postgresql" % "9.1-901.jdbc4",
+  "mysql" % "mysql-connector-java" % "5.1.23",
+  "net.sourceforge.jtds" % "jtds" % "1.2.4" % "test"
 */
 )
