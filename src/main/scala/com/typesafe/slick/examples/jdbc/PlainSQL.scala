@@ -1,8 +1,7 @@
 package com.typesafe.slick.examples.jdbc
 
-import scala.slick.session.Database
-import Database.threadLocalSession
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import scala.slick.jdbc.JdbcBackend.Database
 import Q.interpolation
 
 /**
@@ -21,7 +20,7 @@ object PlainSQL extends App {
     r.nextString, r.nextString, r.nextString))
   implicit val getCoffeeResult = GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
 
-  Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
+  Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession { implicit session =>
 
     // Create the tables, including primary and foreign keys
     Q.updateNA("create table suppliers("+

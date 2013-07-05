@@ -3,9 +3,6 @@ package com.typesafe.slick.examples.lifted
 // Use H2Driver to connect to an H2 database
 import scala.slick.driver.H2Driver.simple._
 
-// Use the implicit threadLocalSession
-import Database.threadLocalSession
-
 /**
  * A simple example that uses statically typed queries against an in-memory
  * H2 database. The example data comes from Oracle's JDBC tutorial at
@@ -14,7 +11,7 @@ import Database.threadLocalSession
 object FirstExample extends App {
 
   // Definition of the SUPPLIERS table
-  object Suppliers extends Table[(Int, String, String, String, String, String)]("SUPPLIERS") {
+  class Suppliers(tag: Tag) extends Table[(Int, String, String, String, String, String)](tag, "SUPPLIERS") {
     def id = column[Int]("SUP_ID", O.PrimaryKey) // This is the primary key column
     def name = column[String]("SUP_NAME")
     def street = column[String]("STREET")
@@ -22,36 +19,37 @@ object FirstExample extends App {
     def state = column[String]("STATE")
     def zip = column[String]("ZIP")
     // Every table needs a * projection with the same type as the table's type parameter
-    def * = id ~ name ~ street ~ city ~ state ~ zip
+    def * = (id, name, street, city, state, zip)
   }
+  val suppliers = TableQuery[Suppliers]
 
   // Definition of the COFFEES table
-  object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
+  class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, "COFFEES") {
     def name = column[String]("COF_NAME", O.PrimaryKey)
     def supID = column[Int]("SUP_ID")
     def price = column[Double]("PRICE")
     def sales = column[Int]("SALES")
     def total = column[Int]("TOTAL")
-    def * = name ~ supID ~ price ~ sales ~ total
+    def * = (name, supID, price, sales, total)
     // A reified foreign key relation that can be navigated to create a join
-    def supplier = foreignKey("SUP_FK", supID, Suppliers)(_.id)
+    def supplier = foreignKey("SUP_FK", supID, suppliers)(_.id)
   }
+  val coffees = TableQuery[Coffees]
 
   // Connect to the database and execute the following block within a session
   Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
-    // The session is never named explicitly. It is bound to the current
-    // thread as the threadLocalSession that we imported
+    implicit session =>
 
     // Create the tables, including primary and foreign keys
-    (Suppliers.ddl ++ Coffees.ddl).create
+    (suppliers.ddl ++ coffees.ddl).create
 
     // Insert some suppliers
-    Suppliers.insert(101, "Acme, Inc.",      "99 Market Street", "Groundsville", "CA", "95199")
-    Suppliers.insert( 49, "Superior Coffee", "1 Party Place",    "Mendocino",    "CA", "95460")
-    Suppliers.insert(150, "The High Ground", "100 Coffee Lane",  "Meadows",      "CA", "93966")
+    suppliers += (101, "Acme, Inc.",      "99 Market Street", "Groundsville", "CA", "95199")
+    suppliers += ( 49, "Superior Coffee", "1 Party Place",    "Mendocino",    "CA", "95460")
+    suppliers += (150, "The High Ground", "100 Coffee Lane",  "Meadows",      "CA", "93966")
 
     // Insert some coffees (using JDBC's batch insert feature, if supported by the DB)
-    Coffees.insertAll(
+    coffees ++= Seq(
       ("Colombian",         101, 7.99, 0, 0),
       ("French_Roast",       49, 8.99, 0, 0),
       ("Espresso",          150, 9.99, 0, 0),
@@ -61,17 +59,17 @@ object FirstExample extends App {
 
     // Iterate through all coffees and output them
     println("Coffees:")
-    Query(Coffees) foreach { case (name, supID, price, sales, total) =>
+    coffees foreach { case (name, supID, price, sales, total) =>
       println("  " + name + "\t" + supID + "\t" + price + "\t" + sales + "\t" + total)
     }
 
     // Why not let the database do the string conversion and concatenation?
     println("Coffees (concatenated by DB):")
-    val q1 = for(c <- Coffees) // Coffees lifted automatically to a Query
-      yield ConstColumn("  ") ++ c.name ++ "\t" ++ c.supID.asColumnOf[String] ++
+    val q1 = for(c <- coffees)
+      yield LiteralColumn("  ") ++ c.name ++ "\t" ++ c.supID.asColumnOf[String] ++
         "\t" ++ c.price.asColumnOf[String] ++ "\t" ++ c.sales.asColumnOf[String] ++
         "\t" ++ c.total.asColumnOf[String]
-    // The first string constant needs to be lifted manually to a ConstColumn
+    // The first string constant needs to be lifted manually to a LiteralColumn
     // so that the proper ++ operator is found
     q1 foreach println
 
@@ -79,15 +77,15 @@ object FirstExample extends App {
     // all coffees costing less than $9.00
     println("Manual join:")
     val q2 = for {
-      c <- Coffees if c.price < 9.0
-      s <- Suppliers if s.id === c.supID
+      c <- coffees if c.price < 9.0
+      s <- suppliers if s.id === c.supID
     } yield (c.name, s.name)
     for(t <- q2) println("  " + t._1 + " supplied by " + t._2)
 
     // Do the same thing using the navigable foreign key
     println("Join by foreign key:")
     val q3 = for {
-      c <- Coffees if c.price < 9.0
+      c <- coffees if c.price < 9.0
       s <- c.supplier
     } yield (c.name, s.name)
     // This time we read the result set into a List
@@ -100,12 +98,12 @@ object FirstExample extends App {
     // Compute the number of coffees by each supplier
     println("Coffees per supplier:")
     val q4 = (for {
-      c <- Coffees
+      c <- coffees
       s <- c.supplier
     } yield (c, s)).groupBy(_._2.id).map {
       case (_, q) => (q.map(_._2.name).min.get, q.length)
     }
-    // .get is needed because SLICK cannot enforce statically that
+    // .get is needed because Slick cannot enforce statically that
     // the supplier is always available (being a non-nullable foreign key),
     // thus wrapping it in an Option
     q4 foreach { case (name, count) =>
