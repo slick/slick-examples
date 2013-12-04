@@ -1,32 +1,31 @@
 package com.typesafe.slick.examples.lifted
 
-import scala.slick.driver.{ExtendedProfile, H2Driver, SQLiteDriver}
+import scala.slick.driver.{JdbcProfile, H2Driver, SQLiteDriver}
 import slick.ast.Dump
 
 /**
  * All database code goes into the DAO (data access object) class which is
- * parameterized by a SLICK driver that implements ExtendedProfile.
+ * parameterized by a SLICK driver that implements JdbcProfile.
  */
-class DAO(val driver: ExtendedProfile) {
+class DAO(val driver: JdbcProfile) {
   // Import the query language features from the driver
   import driver.simple._
 
-  object Props extends Table[(String, String)]("properties") {
+  class Props(tag: Tag) extends Table[(String, String)](tag, "properties") {
     def key = column[String]("key", O.PrimaryKey)
     def value = column[String]("value")
-    def * = key ~ value
+    def * = (key, value)
   }
-
-  type P = Props.type
+  val props = TableQuery[Props]
 
   def create(implicit session: Session) =
-    Props.ddl.create
+    props.ddl.create
 
   def insert(k: String, v: String)(implicit session: Session) =
-    Props.insert(k, v)
+    props.insert(k, v)
 
   def get(k: String)(implicit session: Session): Option[String] =
-    (for(p <- Props if p.key === k) yield p.value).firstOption
+    (for(p <- props if p.key === k) yield p.value).firstOption
 
   def getFirst[M, U](q: Query[M, U])(implicit s: Session) = q.first
 }
@@ -38,8 +37,8 @@ class DAO(val driver: ExtendedProfile) {
 class DAOHelper(val d: DAO) {
   import d.driver.simple._
 
-  def restrictKey(s: String, q: Query[d.Props.type, (String, String)]):
-      Query[d.Props.type, (String, String)] = q.filter(_.key === s)
+  def restrictKey(s: String, q: Query[d.Props, (String, String)]):
+      Query[d.Props, (String, String)] = q.filter(_.key === s)
 }
 
 /**
@@ -47,7 +46,7 @@ class DAOHelper(val d: DAO) {
  */
 object MultiDBExample {
   // We only need the DB/session imports outside the DAO
-  import scala.slick.session.{Database, Session}
+  import scala.slick.jdbc.JdbcBackend.{Database, Session}
 
   def run(name: String, dao: DAO, db: Database) {
     println("Running test against " + name)
@@ -59,7 +58,7 @@ object MultiDBExample {
       println("  Value for key 'baz': " + dao.get("baz"))
       val h = new DAOHelper(dao)
       println("  Using the helper: " +
-        h.d.getFirst(h.restrictKey("foo", h.d.driver.simple.Query(h.d.Props))))
+        h.d.getFirst(h.restrictKey("foo", h.d.props)))
     }
   }
 

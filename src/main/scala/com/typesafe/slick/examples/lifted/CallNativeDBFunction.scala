@@ -1,7 +1,6 @@
 package com.typesafe.slick.examples.lifted
 
 import scala.slick.driver.H2Driver.simple._
-import Database.threadLocalSession
 import java.sql.Date
 
 /**
@@ -10,11 +9,12 @@ import java.sql.Date
  */
 object CallNativeDBFunction extends App {
 
-  val SalesPerDay = new Table[(Date, Int)]("SALES_PER_DAY") {
+  class SalesPerDay(tag: Tag) extends Table[(Date, Int)](tag, "SALES_PER_DAY") {
     def day = column[Date]("DAY", O.PrimaryKey)
     def count = column[Int]("COUNT")
-    def * = day ~ count
+    def * = (day, count)
   }
+  val salesPerDay = TableQuery[SalesPerDay]
 
   // H2 has a day_of_week() function which extracts the day of week from a
   // timestamp value. We lift it to a SLICK SimpleFunction which
@@ -26,9 +26,9 @@ object CallNativeDBFunction extends App {
   // function like this:
   def dayOfWeek2(c: Column[Date]) = dayOfWeek(Seq(c))
 
-  Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
-    SalesPerDay.ddl.create
-    SalesPerDay.insertAll(
+  Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession { implicit session =>
+    salesPerDay.ddl.create
+    salesPerDay ++= Seq(
       (Date.valueOf("2011-04-01"), 3),
       (Date.valueOf("2011-04-02"), 8),
       (Date.valueOf("2011-04-03"), 0),
@@ -44,7 +44,7 @@ object CallNativeDBFunction extends App {
 
     // Use the lifted function in a query to group by day of week
     val q1 = for {
-      (dow, q) <- SalesPerDay.map(s => (dayOfWeek2(s.day), s.count)).groupBy(_._1)
+      (dow, q) <- salesPerDay.map(s => (dayOfWeek2(s.day), s.count)).groupBy(_._1)
     } yield (dow, q.map(_._2).sum)
 
     println("Day of week (1 = Sunday) -> Sales:")
