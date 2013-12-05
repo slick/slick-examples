@@ -13,12 +13,12 @@ case class Picture(url: String, id: Option[Int] = None)
 trait PictureComponent { this: Profile => //requires a Profile to be mixed in...
   import profile.simple._ //...to be able import profile.simple._ 
 
-  class Pictures(tag: Tag) extends Table[(String, Option[Int])](tag, "PICTURES") {
+  class Pictures(tag: Tag) extends Table[Picture](tag, "PICTURES") {
     //                             ^ Table comes from the *current* profile
     def id = column[Option[Int]]("PIC_ID", O.PrimaryKey, O.AutoInc)
     def url = column[String]("PIC_URL", O.NotNull)
 
-    def * = (url, id)
+    def * = (url, id) <> (Picture.tupled, Picture.unapply)
   }
 
   val pictures = TableQuery[Pictures]
