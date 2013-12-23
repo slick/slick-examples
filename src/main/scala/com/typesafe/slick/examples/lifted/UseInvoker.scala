@@ -33,16 +33,16 @@ object UseInvoker extends App {
     println("  " + upTo(3).list)
 
     println("IndexedSeq of k/v pairs up to 3 with .to")
-    println("  " + upTo(3).to[IndexedSeq])
+    println("  " + upTo(3).buildColl[IndexedSeq])
 
     println("Set of k/v pairs up to 3 with .to")
-    println("  " + upTo(3).to[Set])
+    println("  " + upTo(3).buildColl[Set])
 
     println("Array of k/v pairs up to 3 with .to")
-    println("  " + upTo(3).to[Array])
+    println("  " + upTo(3).buildColl[Array])
 
     println("All keys in an unboxed Array[Int]")
     val allKeys = ts.map(_.k)
-    println("  " + allKeys.to[Array]())
+    println("  " + allKeys.buildColl[Array]())
   }
 }
